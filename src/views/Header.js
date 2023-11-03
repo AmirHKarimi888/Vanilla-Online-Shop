@@ -18,8 +18,8 @@ class Header {
     renderCart() {
         const markup = /*html*/
         `
-        <div class="cartBackdrop fixed top-0 left-0 w-full h-screen z-50 bg-zinc-600/30 flex justify-center items-center">
-        <div class="cart lg:w-[50%] md:w-[60%] sm:w-[80%] max-sm:w-[96%] p-5 bg-zinc-100">
+        <div class="cartBackdrop fixed top-0 left-0 w-full h-screen z-50 bg-zinc-600/30 flex justify-center items-center overflow-y-scroll">
+        <div class="cart lg:w-[50%] md:w-[60%] sm:w-[80%] max-sm:w-[87%] p-5 bg-zinc-100">
           ${
               state.cart?.length == 0 ?
               /*html*/`
@@ -193,7 +193,7 @@ class Header {
         </div>
 
         <div class="addModalBackdrop fixed top-0 left-0 z-50 w-full h-screen grid justify-center items-center bg-zinc-600/30 hidden">
-          <div class="addModal p-5 w-[400px] bg-zinc-100 text-center">
+          <div class="addModal p-5 w-[360px] bg-zinc-100 text-center">
             <i class="fa fa-check-circle-o text-7xl text-green-700"></i>
             <p class="text-center mt-5 text-lg">Item was successfully added to your cart!</p>
           </div>
