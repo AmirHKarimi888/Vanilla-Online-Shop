@@ -24,7 +24,18 @@ class Header {
               <p class="text-center mt-2 text-zinc-500">Total price: 0 $</p>
               ` : 
               /*html*/`
-              
+              ${ this.cart.length == 1 ? `<p class="text-center">There is ${this.cart.length} item existing in your cart.</p>` : `<p class="text-center">There are ${this.cart.length} items existing in your cart.</p>`}
+              <ul class="">
+                ${
+                    this.cart.map((product) => {
+                        return(/*html*/`
+                        <li class="">
+                          
+                        </li>
+                        `)
+                    }).join("")
+                }
+              </ul>
               `
           }
         </div>
@@ -50,6 +61,19 @@ class Header {
         if(this.header.querySelector(".cart")) {
             this.header.querySelector(".cart").addEventListener("click", e => e.stopPropagation());
         }
+
+
+        this.header.querySelector(".addModalBackdrop").addEventListener("click", () => {
+            if(this.header.querySelector(".addModalBackdrop").classList.contains("hidden")) {
+                this.header.querySelector(".addModalBackdrop").classList.remove("hidden");
+            } else {
+                this.header.querySelector(".addModalBackdrop").classList.add("hidden");
+            }
+        })
+    }
+
+    showAddModal() {
+        this.header.querySelector(".addModalBackdrop").classList.remove("hidden");
     }
 
     generateMarkup() {
@@ -73,6 +97,13 @@ class Header {
 
         <div class="cartContainer">
           
+        </div>
+
+        <div class="addModalBackdrop fixed top-0 left-0 z-50 w-full h-screen grid justify-center items-center bg-zinc-600/30 hidden">
+          <div class="addModal p-5 w-[400px] bg-zinc-100 text-center">
+            <i class="fa fa-check-circle-o text-7xl text-green-700"></i>
+            <p class="text-center mt-5 text-lg">Item was successfully added to your cart!</p>
+          </div>
         </div>
         `
 

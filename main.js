@@ -43,6 +43,9 @@ const addToCart = async (id) => {
     
   })
   .then(() => {
+    Header.showAddModal();
+  })
+  .then(() => {
     console.log(state.cart);
   })
 }
