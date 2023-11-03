@@ -20,7 +20,7 @@ const addToCart = async (id) => {
   .then(() => {
     state.product = {
       ...state.product,
-      count: 0
+      count: 1
     }
   })
   .then(() => {

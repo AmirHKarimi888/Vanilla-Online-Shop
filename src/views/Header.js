@@ -15,8 +15,8 @@ class Header {
     renderCart() {
         const markup = /*html*/
         `
-        <div class="cartBackdrop fixed top-0 left-0 w-full h-screen z-50 bg-zinc-600/30 grid justify-center items-center">
-        <div class="cart w-[400px] p-5 bg-zinc-100">
+        <div class="cartBackdrop fixed top-0 left-0 w-full h-screen z-50 bg-zinc-600/30 flex justify-center items-center">
+        <div class="cart lg:w-[50%] md:w-[60%] sm:w-[80%] max-sm:w-[96%] p-5 bg-zinc-100">
           ${
               this.cart?.length == 0 ?
               /*html*/`
@@ -24,18 +24,34 @@ class Header {
               <p class="text-center mt-2 text-zinc-500">Total price: 0 $</p>
               ` : 
               /*html*/`
+
+              <div class="cartProductsContainer">
               ${ this.cart.length == 1 ? `<p class="text-center">There is ${this.cart.length} item existing in your cart.</p>` : `<p class="text-center">There are ${this.cart.length} items existing in your cart.</p>`}
-              <ul class="">
-                ${
-                    this.cart.map((product) => {
-                        return(/*html*/`
-                        <li class="">
-                          
-                        </li>
-                        `)
-                    }).join("")
-                }
+              <p class="text-center mt-2 text-zinc-500">Total price: ${this.cart.reduce((t, c) => t + (c.count * c.price), 0)} $</p>
+
+              <ul class="mt-5 mx-auto w-[96%] border-t border-x border-zinc-400">
+              ${
+                  this.cart.map((product) => {
+                      return(/*html*/`
+                      <li class="p-5 border-b border-zinc-400 grid grid-cols-3">
+                        <div class="col-span-1 grid justify-start items-center">
+                          <img src="${product?.image}" class="w-[70px] aspect-square flex items-center" />
+                        </div>
+
+                        <div class="col-span-2 text-center grid grid-cols-1">
+                          <p class="text-center">${product?.title}</p>
+                          <div class="mt-5 flex gap-2 justify-center items-center">
+                            <button id="${product?.id}" class="removeProductBtn w-[30px] h-[30px] rounded-md bg-red-500 flex justify-center items-center text-lg text-white">-</button>
+                            <div class="flex items-center"><p class="text-center mt-2 text-zinc-500">Quantity: ${product?.count} - Price: ${(product?.count) * (product?.price)} $</p></div>
+                            <button id="${product?.id}" class="addProductBtn w-[30px] h-[30px] rounded-md bg-green-500 flex justify-center items-center text-lg text-white">+</button>
+                          </div>
+                        </div>
+                      </li>
+                      `)
+                  }).join("")
+              }
               </ul>
+              </div>
               `
           }
         </div>
@@ -51,11 +67,52 @@ class Header {
         this.header.querySelector(".cartContainer").innerHTML = "";
     }
 
+    
+    renderCartProducts() {
+        const markup = /*html*/`
+        ${ this.cart.length == 1 ? `<p class="text-center">There is ${this.cart.length} item existing in your cart.</p>` : `<p class="text-center">There are ${this.cart.length} items existing in your cart.</p>`}
+
+              <ul class="mt-5 mx-auto w-[96%] border-t border-x border-zinc-400">
+              ${
+                  this.cart.map((product) => {
+                      return(/*html*/`
+                      <li class="p-5 border-b border-zinc-400 grid grid-cols-3">
+                        <div class="col-span-1 grid justify-start items-center">
+                          <img src="${product?.image}" class="w-[70px] aspect-square flex items-center" />
+                        </div>
+
+                        <div class="col-span-2 text-center grid grid-cols-1">
+                          <p class="text-center">${product?.title}</p>
+                          <div class="mt-5 flex gap-2 justify-center items-center">
+                            <button id="${product?.id}" class="removeProductBtn w-[30px] h-[30px] rounded-md bg-red-500 flex justify-center items-center text-lg text-white">-</button>
+                            <div class="flex items-center"><p class="text-center mt-2 text-zinc-500">Quantity: ${product?.count} - Price: ${(product?.count) * (product?.price)} $</p></div>
+                            <button id="${product?.id}" class="addProductBtn w-[30px] h-[30px] rounded-md bg-green-500 flex justify-center items-center text-lg text-white">+</button>
+                          </div>
+                        </div>
+                      </li>
+                      `)
+                  }).join("")
+              }
+              </ul>
+        `
+
+        this.clearCartProducts();
+        this.header.querySelector(".cartProductsContainer").insertAdjacentHTML("afterbegin", markup);
+    }
+
+    clearCartProducts() {
+        this.header.querySelector(".cartProductsContainer").innerHTML = "";
+    }
+
+
     handleHeaderEvents() {
         this.header.querySelector("#shoppingCartBtn").addEventListener("click", () => this.renderCart());
 
         if(this.header.querySelector(".cartBackdrop")) {
-            this.header.querySelector(".cartBackdrop").addEventListener("click", () => this.clearCart());
+            this.header.querySelector(".cartBackdrop").addEventListener("click", () => {
+                this.clearCart()
+                this.handleHeaderEvents();
+            });
         }
 
         if(this.header.querySelector(".cart")) {
