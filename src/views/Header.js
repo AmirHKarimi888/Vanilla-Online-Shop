@@ -1,9 +1,10 @@
+import { decreaseProductCount, increseProductCount } from "../../main";
+import { state } from "../model";
+
 class Header {
     header = document.querySelector("header");
-    cart;
 
-    render(cart) {
-        this.cart = cart;
+    render() {
         this.generateMarkup();
         this.handleHeaderEvents();
     }
@@ -12,13 +13,15 @@ class Header {
         this.header.innerHTML = "";
     }
 
+
+
     renderCart() {
         const markup = /*html*/
         `
         <div class="cartBackdrop fixed top-0 left-0 w-full h-screen z-50 bg-zinc-600/30 flex justify-center items-center">
         <div class="cart lg:w-[50%] md:w-[60%] sm:w-[80%] max-sm:w-[96%] p-5 bg-zinc-100">
           ${
-              this.cart?.length == 0 ?
+              state.cart?.length == 0 ?
               /*html*/`
               <p class="text-center">There is nothing in your cart yet!</p>
               <p class="text-center mt-2 text-zinc-500">Total price: 0 $</p>
@@ -26,12 +29,12 @@ class Header {
               /*html*/`
 
               <div class="cartProductsContainer">
-              ${ this.cart.length == 1 ? `<p class="text-center">There is ${this.cart.length} item existing in your cart.</p>` : `<p class="text-center">There are ${this.cart.length} items existing in your cart.</p>`}
-              <p class="text-center mt-2 text-zinc-500">Total price: ${this.cart.reduce((t, c) => t + (c.count * c.price), 0)} $</p>
+              ${ state.cart.length == 1 ? `<p class="text-center">There is ${state.cart.length} item existing in your cart.</p>` : `<p class="text-center">There are ${state.cart.length} items existing in your cart.</p>`}
+              <p class="text-center mt-2 text-zinc-500">Total price: ${(state.cart.reduce((t, c) => t + (c.count * c.price), 0)).toFixed(2)} $</p>
 
               <ul class="mt-5 mx-auto w-[96%] border-t border-x border-zinc-400">
               ${
-                  this.cart.map((product) => {
+                  state.cart.map((product) => {
                       return(/*html*/`
                       <li class="p-5 border-b border-zinc-400 grid grid-cols-3">
                         <div class="col-span-1 grid justify-start items-center">
@@ -42,7 +45,7 @@ class Header {
                           <p class="text-center">${product?.title}</p>
                           <div class="mt-5 flex gap-2 justify-center items-center">
                             <button id="${product?.id}" class="removeProductBtn w-[30px] h-[30px] rounded-md bg-red-500 flex justify-center items-center text-lg text-white">-</button>
-                            <div class="flex items-center"><p class="text-center mt-2 text-zinc-500">Quantity: ${product?.count} - Price: ${(product?.count) * (product?.price)} $</p></div>
+                            <div class="flex items-center"><p class="text-center mt-2 text-zinc-500">Quantity: ${product?.count} - Price: ${((product?.count) * (product?.price)).toFixed(2)} $</p></div>
                             <button id="${product?.id}" class="addProductBtn w-[30px] h-[30px] rounded-md bg-green-500 flex justify-center items-center text-lg text-white">+</button>
                           </div>
                         </div>
@@ -67,34 +70,50 @@ class Header {
         this.header.querySelector(".cartContainer").innerHTML = "";
     }
 
+
     
     renderCartProducts() {
         const markup = /*html*/`
-        ${ this.cart.length == 1 ? `<p class="text-center">There is ${this.cart.length} item existing in your cart.</p>` : `<p class="text-center">There are ${this.cart.length} items existing in your cart.</p>`}
+        ${
+            state.cart?.length == 0 ?
+            /*html*/`
+            <p class="text-center">There is nothing in your cart yet!</p>
+            <p class="text-center mt-2 text-zinc-500">Total price: 0 $</p>
+            ` : 
+            /*html*/`
 
-              <ul class="mt-5 mx-auto w-[96%] border-t border-x border-zinc-400">
-              ${
-                  this.cart.map((product) => {
-                      return(/*html*/`
-                      <li class="p-5 border-b border-zinc-400 grid grid-cols-3">
-                        <div class="col-span-1 grid justify-start items-center">
-                          <img src="${product?.image}" class="w-[70px] aspect-square flex items-center" />
-                        </div>
+            <div class="cartProductsContainer">
+            ${ state.cart.length == 1 ? `<p class="text-center">There is ${state.cart.length} item existing in your cart.</p>` : `<p class="text-center">There are ${state.cart.length} items existing in your cart.</p>`}
+            <p class="text-center mt-2 text-zinc-500">Total price: ${(state.cart.reduce((t, c) => t + (c.count * c.price), 0)).toFixed(2)} $</p>
 
-                        <div class="col-span-2 text-center grid grid-cols-1">
-                          <p class="text-center">${product?.title}</p>
-                          <div class="mt-5 flex gap-2 justify-center items-center">
-                            <button id="${product?.id}" class="removeProductBtn w-[30px] h-[30px] rounded-md bg-red-500 flex justify-center items-center text-lg text-white">-</button>
-                            <div class="flex items-center"><p class="text-center mt-2 text-zinc-500">Quantity: ${product?.count} - Price: ${(product?.count) * (product?.price)} $</p></div>
-                            <button id="${product?.id}" class="addProductBtn w-[30px] h-[30px] rounded-md bg-green-500 flex justify-center items-center text-lg text-white">+</button>
-                          </div>
+            <ul class="mt-5 mx-auto w-[96%] border-t border-x border-zinc-400">
+            ${
+                state.cart.map((product) => {
+                    return(/*html*/`
+                    <li class="p-5 border-b border-zinc-400 grid grid-cols-3">
+                      <div class="col-span-1 grid justify-start items-center">
+                        <img src="${product?.image}" class="w-[70px] aspect-square flex items-center" />
+                      </div>
+
+                      <div class="col-span-2 text-center grid grid-cols-1">
+                        <p class="text-center">${product?.title}</p>
+                        <div class="mt-5 flex gap-2 justify-center items-center">
+                          <button id="${product?.id}" class="removeProductBtn w-[30px] h-[30px] rounded-md bg-red-500 flex justify-center items-center text-lg text-white">-</button>
+                          <div class="flex items-center"><p class="text-center mt-2 text-zinc-500">Quantity: ${product?.count} - Price: ${((product?.count) * (product?.price)).toFixed(2)} $</p></div>
+                          <button id="${product?.id}" class="addProductBtn w-[30px] h-[30px] rounded-md bg-green-500 flex justify-center items-center text-lg text-white">+</button>
                         </div>
-                      </li>
-                      `)
-                  }).join("")
-              }
+                      </div>
+                    </li>
+                    `)
+                }).join("")
+            }
+            </ul>
+            </div>
+            `
+        }
               </ul>
         `
+
 
         this.clearCartProducts();
         this.header.querySelector(".cartProductsContainer").insertAdjacentHTML("afterbegin", markup);
@@ -106,6 +125,7 @@ class Header {
 
 
     handleHeaderEvents() {
+
         this.header.querySelector("#shoppingCartBtn").addEventListener("click", () => this.renderCart());
 
         if(this.header.querySelector(".cartBackdrop")) {
@@ -119,6 +139,23 @@ class Header {
             this.header.querySelector(".cart").addEventListener("click", e => e.stopPropagation());
         }
 
+        this.header.querySelectorAll(".addProductBtn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                increseProductCount(parseInt(btn.id));
+                this.clearCartProducts();
+                this.renderCartProducts();
+                this.handleHeaderEvents();
+            })
+        })
+
+        this.header.querySelectorAll(".removeProductBtn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                decreaseProductCount(parseInt(btn.id));
+                this.clearCartProducts();
+                this.renderCartProducts();
+                this.handleHeaderEvents();
+            })
+        })
 
         this.header.querySelector(".addModalBackdrop").addEventListener("click", () => {
             if(this.header.querySelector(".addModalBackdrop").classList.contains("hidden")) {
@@ -142,13 +179,12 @@ class Header {
            </div>
 
             <form class="col-span-2 flex grid-cols-2 mx-auto justify-center items-center">
-              <input id="searchInput" class="h-[30px] bg-zinc-50 border border-zinc-400 rounded-l-lg" />
-              <button id="searchBtn" class="h-[30px] aspect-square border-t border-r border-b border-zinc-400 text-white rounded-r-md bg-cyan-500"><i class="fa fa-search"></i></button>
+
            </form>
 
 
            <div class="col-span-1 text-end">
-             <button id="shoppingCartBtn" class=" h-[30px] aspect-square border border-zinc-400 text-white rounded bg-cyan-500"><i class="fa fa-shopping-cart"></i></button>
+             <button id="shoppingCartBtn" class=" h-[40px] aspect-square border border-cyan-800 text-white rounded bg-cyan-500"><i class="fa fa-shopping-cart"></i></button>
            </div>
         </nav>
 

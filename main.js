@@ -3,8 +3,11 @@ import './src/views/template';
 import Header from './src/views/Header';
 import Products from './src/views/Products';
 import { Action, state } from './src/model';
+import Footer from './src/views/Footer';
 
-Header.render(state.cart);
+Header.render();
+
+
 
 const getProducts = async () => {
   Products.renderProductsSkeleton();
@@ -16,39 +19,100 @@ const getProducts = async () => {
 }
 
 const addToCart = async (id) => {
-  await Action.getProduct(id)
-  .then(() => {
-    state.product = {
-      ...state.product,
-      count: 1
+
+  state.product = state.products.filter((product) => {
+    if(product?.id == id) {
+      return product;
     }
-  })
-  .then(() => {
-    let repeatitive = state.cart.filter(product => {
+  })[0]
+
+  state.product = {
+    ...state.product,
+    count: 1
+  }
+
+  let repeatitive = state.cart.filter(product => {
+    if(product.title == state.product.title) {
+      return product;
+    }
+  })[0]
+
+  if(repeatitive?.title == state.product.title) {
+    state.cart.filter(product => {
       if(product.title == state.product.title) {
-        return product;
+        product.count = product.count + 1;
       }
-    })[0]
+    })
 
-    if(repeatitive?.title == state.product.title) {
-      state.cart.filter(product => {
-        if(product.title == state.product.title) {
-          product.count = product.count + 1;
-        }
-      })
+  } else {
+    state.cart.push(state.product);
+  }
 
-    } else {
-      state.cart.push(state.product);
-    }
+  Header.showAddModal();
+
+  // await Action.getProduct(id)
+  // .then(() => {
+  //   state.product = {
+  //     ...state.product,
+  //     count: 1
+  //   }
+  // })
+  // .then(() => {
+  //   let repeatitive = state.cart.filter(product => {
+  //     if(product.title == state.product.title) {
+  //       return product;
+  //     }
+  //   })[0]
+
+  //   if(repeatitive?.title == state.product.title) {
+  //     state.cart.filter(product => {
+  //       if(product.title == state.product.title) {
+  //         product.count = product.count + 1;
+  //       }
+  //     })
+
+  //   } else {
+  //     state.cart.push(state.product);
+  //   }
     
+  // })
+  // .then(() => {
+  //   Header.showAddModal();
+  // })
+}
+
+
+
+export const increseProductCount = (id) => {
+  state.cart.filter(product => {
+    if(product.id == id) {
+      product.count = product.count + 1;
+    }
   })
-  .then(() => {
-    Header.showAddModal();
-  })
-  .then(() => {
-    console.log(state.cart);
+
+}
+
+export const decreaseProductCount = (id) => {
+  state.cart.filter(product => {
+    if(product.id == id) {
+      if(product.count > 1) {
+        product.count = product.count - 1;
+
+      } else if(product.count == 1) {
+
+        state.cart = state.cart.filter((p) => {
+          if(p.id != id) {
+            return p;
+          }
+        })
+      }
+    }
   })
 }
+
+
+Footer.render();
+
 
 const init = () => {
   ["load", "hashchange"].map(e => {
