@@ -11,6 +11,14 @@ class Products {
         this.main.innerHTML = "";
     }
 
+    handleProductsEvents(addToCart) {
+        this.main.querySelectorAll(".addToCartBtn").forEach((btn) => {
+            btn.addEventListener("click", async () => {
+                await addToCart(parseInt(btn.id));
+            })
+        })
+    }
+
     renderProductsSkeleton() {
         const markup = /*html*/
         `
@@ -47,17 +55,17 @@ class Products {
     generateMarkup() {
         const markup = /*html*/
         `
-        <div class="products">
-          <ul class="mx-auto my-[200px] lg:w-[75%] md:w-[78%] sm:w-[80%] max-sm:w-[84%] grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 max-sm:grid-cols-1 gap-5">
+        <div>
+          <ul class="products mx-auto my-[200px] lg:w-[75%] md:w-[78%] sm:w-[80%] max-sm:w-[84%] grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 max-sm:grid-cols-1 gap-5">
             ${
                 this.products.map((product) => {
                     return(/*html*/`
-                    <li class=" lg:aspect-[1/1.2] md:aspect-[1/1.2] sm:aspect-[1/1.3] max-sm:aspect-[1/1.35] bg-zinc-100 shadow-lg p-5 text-center">
+                    <li class="product lg:aspect-[1/1.2] md:aspect-[1/1.2] sm:aspect-[1/1.3] max-sm:aspect-[1/1.35] bg-zinc-100 shadow-lg p-5 text-center">
                       <img src="${product?.image}" class="mx-auto w-[85%] aspect-square" />
                       <div class="my-2 mx-auto w-[90%] h-[50px] grid grid-cols-1">
                         <p class="my-1 lg:text-xs md:text-sm sm:text-md max-sm:text-lg">${product?.title}</p>
                         <p class="my-1 text-zinc-500 lg:text-xs md:text-sm sm:text-md max-sm:text-lg">${product?.price} $</p>
-                        <button class="my-1 text-center p-1 text-white bg-cyan-600 rounded-lg">Add To Cart</button>
+                        <button id="${product?.id}" class="addToCartBtn my-1 text-center p-1 text-white bg-cyan-600 rounded-lg">Add To Cart</button>
                       </div>
                     </li>
                     `)

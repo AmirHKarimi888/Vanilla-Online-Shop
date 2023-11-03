@@ -3,7 +3,7 @@ import { url } from "../api"
 export const state = {
     products: [],
     product: {},
-    carts: []
+    cart: []
 }
 
 class Actions {
@@ -12,6 +12,12 @@ class Actions {
         await fetch(`${url}products`)
         .then(res => res.json())
         .then(data => state.products = data);
+    }
+
+    async getProduct(id) {
+        await fetch(`${url}products/${id}`)
+        .then(res => res.json())
+        .then(data => state.product = data);
     }
 }
 
