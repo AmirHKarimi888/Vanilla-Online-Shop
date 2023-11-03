@@ -30,7 +30,7 @@ class Header {
 
               <div class="cartProductsContainer">
               ${ state.cart.length == 1 ? `<p class="text-center">There is ${state.cart.length} item existing in your cart.</p>` : `<p class="text-center">There are ${state.cart.length} items existing in your cart.</p>`}
-              <p class="text-center mt-2 text-zinc-500">Total price: ${(state.cart.reduce((t, c) => t + (c.count * c.price), 0)).toFixed(2)} $</p>
+              
 
               <ul class="mt-5 mx-auto w-[96%] border-t border-x border-zinc-400">
               ${
@@ -54,6 +54,8 @@ class Header {
                   }).join("")
               }
               </ul>
+
+              <p class="text-center mt-2 text-zinc-500">Total price: ${(state.cart.reduce((t, c) => t + (c.count * c.price), 0)).toFixed(2)} $</p>
               </div>
               `
           }
@@ -84,7 +86,7 @@ class Header {
 
             <div class="cartProductsContainer">
             ${ state.cart.length == 1 ? `<p class="text-center">There is ${state.cart.length} item existing in your cart.</p>` : `<p class="text-center">There are ${state.cart.length} items existing in your cart.</p>`}
-            <p class="text-center mt-2 text-zinc-500">Total price: ${(state.cart.reduce((t, c) => t + (c.count * c.price), 0)).toFixed(2)} $</p>
+            
 
             <ul class="mt-5 mx-auto w-[96%] border-t border-x border-zinc-400">
             ${
@@ -108,6 +110,8 @@ class Header {
                 }).join("")
             }
             </ul>
+
+            <p class="text-center mt-2 text-zinc-500">Total price: ${(state.cart.reduce((t, c) => t + (c.count * c.price), 0)).toFixed(2)} $</p>
             </div>
             `
         }
